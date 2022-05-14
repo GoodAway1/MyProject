@@ -25,6 +25,7 @@ class MyForm(QtWidgets.QWidget):
                 button_ij = QtWidgets.QPushButton(self)
                 button_ij.setFixedWidth(80)
                 button_ij.setFixedHeight(80)
+                #button_ij.setIcon(QtGui.QIcon(""))
                 # button_ij_id = str(i) + '_' + str(j)
                 self.__ui.gridLayout.addWidget(button_ij, i, j)
 
