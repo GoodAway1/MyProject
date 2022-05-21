@@ -1,3 +1,5 @@
+import random
+
 from MyMainForm_2 import Ui_Form
 from PyQt5 import QtCore, QtGui, QtWidgets
 #form MyMainFprm_3 import Ui_EndGame
@@ -19,13 +21,17 @@ class MyForm(QtWidgets.QWidget):
                                              QtWidgets.QSizePolicy.Expanding)
         self.__ui.gridLayout.addItem(self.firstSpacer, 0, 0, 1, 1)
 
+        imageslist = ['romb.png', 'treyg.png','kwadr.png','shest.png']
         for i in range(1, 10):
             for j in range(1, 10):
               # number += 1
                 button_ij = QtWidgets.QPushButton(self)
                 button_ij.setFixedWidth(80)
                 button_ij.setFixedHeight(80)
-                #button_ij.setIcon(QtGui.QIcon(""))
+                button_ij.setCheckable(True)
+                #button_ij.setStyleSheet('background-images:'+imageslist[random.randrange(0, 2)])
+                button_ij.setIcon(QtGui.QIcon(imageslist[random.randrange(0, 4)]))
+                button_ij.setIconSize(button_ij.size())
                 # button_ij_id = str(i) + '_' + str(j)
                 self.__ui.gridLayout.addWidget(button_ij, i, j)
 
