@@ -11,18 +11,19 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 
-class Ui_Form(object):
-    def setupUi(self, Form):
-        Form.setObjectName("Form")
-        Form.resize(140, 568)
-        self.horizontalLayout = QtWidgets.QHBoxLayout(Form)
+class Ui_mainForm(object):
+    def setupUi(self, mainForm):
+        mainForm.setObjectName("mainForm")
+        mainForm.resize(896, 673)
+        mainForm.setStyleSheet("#widget {border-image:url(:/bakcground/BackGround.jpg) 0 0 0 0 stretch stretch;}")
+        self.horizontalLayout = QtWidgets.QHBoxLayout(mainForm)
+        self.horizontalLayout.setSpacing(0)
         self.horizontalLayout.setObjectName("horizontalLayout")
-        self.widget_2 = QtWidgets.QWidget(Form)
+        self.widget_2 = QtWidgets.QWidget(mainForm)
+        self.widget_2.setStyleSheet("#widget_2{background-color:rgba(0, 132, 255, 100)}")
         self.widget_2.setObjectName("widget_2")
         self.verticalLayout_4 = QtWidgets.QVBoxLayout(self.widget_2)
         self.verticalLayout_4.setObjectName("verticalLayout_4")
-        spacerItem = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
-        self.verticalLayout_4.addItem(spacerItem)
         self.label = QtWidgets.QLabel(self.widget_2)
         font = QtGui.QFont()
         font.setPointSize(16)
@@ -36,8 +37,6 @@ class Ui_Form(object):
         self.lineEdit.setReadOnly(True)
         self.lineEdit.setObjectName("lineEdit")
         self.verticalLayout_4.addWidget(self.lineEdit)
-        spacerItem1 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
-        self.verticalLayout_4.addItem(spacerItem1)
         self.label_2 = QtWidgets.QLabel(self.widget_2)
         font = QtGui.QFont()
         font.setPointSize(16)
@@ -46,11 +45,14 @@ class Ui_Form(object):
         self.label_2.setObjectName("label_2")
         self.verticalLayout_4.addWidget(self.label_2)
         self.lineEdit_2 = QtWidgets.QLineEdit(self.widget_2)
+        font = QtGui.QFont()
+        font.setPointSize(14)
+        self.lineEdit_2.setFont(font)
         self.lineEdit_2.setReadOnly(True)
         self.lineEdit_2.setObjectName("lineEdit_2")
         self.verticalLayout_4.addWidget(self.lineEdit_2)
-        spacerItem2 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
-        self.verticalLayout_4.addItem(spacerItem2)
+        spacerItem = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
+        self.verticalLayout_4.addItem(spacerItem)
         self.pushButton = QtWidgets.QPushButton(self.widget_2)
         font = QtGui.QFont()
         font.setPointSize(16)
@@ -58,7 +60,9 @@ class Ui_Form(object):
         self.pushButton.setObjectName("pushButton")
         self.verticalLayout_4.addWidget(self.pushButton)
         self.horizontalLayout.addWidget(self.widget_2)
-        self.widget = QtWidgets.QWidget(Form)
+        self.widget = QtWidgets.QWidget(mainForm)
+        self.widget.setAutoFillBackground(False)
+        self.widget.setStyleSheet("#widget{background-color:none}")
         self.widget.setObjectName("widget")
         self.gridLayout_2 = QtWidgets.QGridLayout(self.widget)
         self.gridLayout_2.setObjectName("gridLayout_2")
@@ -68,12 +72,13 @@ class Ui_Form(object):
         self.horizontalLayout.addWidget(self.widget)
         self.horizontalLayout.setStretch(1, 1)
 
-        self.retranslateUi(Form)
-        QtCore.QMetaObject.connectSlotsByName(Form)
+        self.retranslateUi(mainForm)
+        QtCore.QMetaObject.connectSlotsByName(mainForm)
 
-    def retranslateUi(self, Form):
+    def retranslateUi(self, mainForm):
         _translate = QtCore.QCoreApplication.translate
-        Form.setWindowTitle(_translate("Form", "Form"))
-        self.label.setText(_translate("Form", "Время"))
-        self.label_2.setText(_translate("Form", "Счет"))
-        self.pushButton.setText(_translate("Form", "Меню"))
+        mainForm.setWindowTitle(_translate("mainForm", "Form"))
+        self.label.setText(_translate("mainForm", "Время"))
+        self.label_2.setText(_translate("mainForm", "Счет"))
+        self.pushButton.setText(_translate("mainForm", "Меню"))
+import resources_rc
