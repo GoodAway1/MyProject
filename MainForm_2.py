@@ -16,20 +16,25 @@ class MyForm(QtWidgets.QWidget):
         self.showMaximized()
         self.timerSec = QtCore.QTimer()
         self.timerSec.timeout.connect(self.onTimer)
-        self.reset()
+
         self.checkedCount = 0
+        #self.moveCount = 20
         self.firstSpacer = QtWidgets.QSpacerItem(10, 10, QtWidgets.QSizePolicy.Expanding,
                                              QtWidgets.QSizePolicy.Expanding)
         self.__ui.gridLayout.addItem(self.firstSpacer, 0, 0, 1, 1)
-
-        imageslist = ['romb.png', 'treyg.png','kwadr.png','shest.png']
+        self.N = 10
+        self.imageslist = ['romb.png', 'treyg.png','kwadr.png','shest.png']
         self.buttons = {}
         self.checkedButtons = {}
-        for i in range(1, 10):
-            for j in range(1, 10):
+        for i in range(1, self.N):
+            label1 = QtWidgets.QLabel('')
+            label2 = QtWidgets.QLabel('')
+            self.__ui.gridLayout.addWidget(label1, self.N, i)
+            self.__ui.gridLayout.addWidget(label2, i, self.N)
+            for j in range(1, self.N):
               # number += 1
                 button_ij = QtWidgets.QPushButton(self)
-                img = imageslist[random.randrange(0, 4)]
+                img = self.imageslist[random.randrange(0, 4)]
                 button_ij = MyButton(i, j, img, self)
                 button_ij.setFixedWidth(80)
                 button_ij.setFixedHeight(80)
@@ -51,6 +56,7 @@ class MyForm(QtWidgets.QWidget):
         self.lastSpacer = QtWidgets.QSpacerItem(10, 10, QtWidgets.QSizePolicy.Expanding,
                                                 QtWidgets.QSizePolicy.Expanding)
         self.__ui.gridLayout.addItem(self.lastSpacer, 10, 10, 1, 1)
+        self.reset()
 
     def buttonIJClick(self, checked):
         # print(self.sender().x, self.sender().y)
@@ -81,10 +87,16 @@ class MyForm(QtWidgets.QWidget):
                         b1.setIcon(QtGui.QIcon(b1.images))
                         b2.setIcon(QtGui.QIcon(b2.images))
                         self.clearAllChecked()
+                        self.destroySame()
+                        # self.moveCount -= 1
+                        #
+                        #
+                        # сделать сообщение об окончании ходов!
                         return
 
         else:
             self.checkedCount -= 1
+
 
     def clearAllChecked(self):
         self.checkedButtons.clear()
@@ -117,9 +129,84 @@ class MyForm(QtWidgets.QWidget):
 
     def reset(self):
         #сброс всего на форме
-        self.secValue = 4
+        for i in range(1, self.N):
+            for j in range(1, self.N):
+                img = self.imageslist[random.randrange(0, 4)]
+                self.buttons[i, j].images=img
+                self.buttons[i, j].setChecked(False)
+                self.buttons[i, j].setIcon(QtGui.QIcon(img))
+                self.buttons[i, j].setIconSize(self.buttons[i, j].size())
+        self.secValue = 20
         self.timerSec.start(1000)
 
+    def destroySame(self):
+        countSameLeft = {}
+        countSameUp = {}
+        for i in range(1,self.N):
+            for j in range(1,self.N):
+                if (i,j) in self.buttons:
+                    if not((i,j) in countSameLeft):
+                        countSameLeft[i,j] = 0
+                    if not((i,j) in countSameUp):
+                        countSameUp[i, j] = 0
+                    if i>1:
+                        if (i-1,j) in self.buttons:
+                            if (self.buttons[i,j].images == self.buttons[i-1,j].images):
+                                countSameUp[i,j] = countSameUp[i-1,j] + 1
+                    if j>1:
+                        if (i, j - 1) in self.buttons:
+                            if (self.buttons[i,j].images == self.buttons[i,j-1].images):
+                                countSameLeft[i,j] = countSameLeft[i,j-1] + 1
+                    if countSameLeft[i,j]==3 or countSameUp[i,j]==3:
+                        self.removeSameButtons(i,j)
+                        self.downAll()
+                        self.fillEmpty()
+                        self.destroySame()
+                       # return
+
+    def removeSameButtons(self,x,y):
+        dx = [1,0,-1,0]
+        dy = [0,1,0,-1]
+        img = self.buttons[x,y].images
+        self.__ui.gridLayout.removeWidget(self.buttons[x, y])
+        del self.buttons[x, y]
+        # Счет очков ()()()()()()()()()()()
+        #
+        #
+        #
+        #
+        for k in range(0,4):
+            new_x = x + dx[k]
+            new_y = y + dy[k]
+            if (new_x,new_y) in self.buttons:
+                if img == self.buttons[new_x,new_y].images:
+                    self.removeSameButtons(new_x,new_y)
 
 
+    def downAll(self):
+        for k in range(0,self.N*2):
+            for i in range(1, self.N - 1):
+                for j in range(1, self.N):
+                    if (i,j) in self.buttons:
+                        if (i+1,j) not in self.buttons:
+                            self.buttons[i+1,j]=self.buttons[i,j]
+                            self.buttons[i + 1, j].x+=1
+                            self.__ui.gridLayout.addWidget(self.buttons[i + 1, j],i+1,j)
+                            del self.buttons[i, j]
 
+    def fillEmpty(self):
+        for i in range(1, self.N):
+            for j in range(1, self.N):
+                if (i,j) not in self.buttons:
+                    button_ij = QtWidgets.QPushButton(self)
+                    img = self.imageslist[random.randrange(0, 4)]
+                    button_ij = MyButton(i, j, img, self)
+                    button_ij.setFixedWidth(80)
+                    button_ij.setFixedHeight(80)
+                    button_ij.setCheckable(True)
+                    button_ij.setStyleSheet("background-color:rgba(0, 132, 255, 255)")
+                    button_ij.clicked.connect(self.buttonIJClick)
+                    button_ij.setIcon(QtGui.QIcon(img))
+                    button_ij.setIconSize(button_ij.size())
+                    self.__ui.gridLayout.addWidget(button_ij, i, j)
+                    self.buttons[i, j] = button_ij
