@@ -1,4 +1,5 @@
 import random
+import time
 
 from MyMainForm_2 import Ui_mainForm
 from PyQt5 import QtCore, QtGui, QtWidgets
@@ -7,8 +8,13 @@ from my_button import MyButton
 
 class MyForm(QtWidgets.QWidget):
 
+
+
     def __init__(self, menuForm):
         super().__init__()
+        self.plus_step = False
+        self.step = 0
+        self.deleted = 0
         self.__ui = Ui_mainForm()
         self.__ui.setupUi(self)
         self.__menuForm = menuForm
@@ -136,12 +142,13 @@ class MyForm(QtWidgets.QWidget):
                 self.buttons[i, j].setChecked(False)
                 self.buttons[i, j].setIcon(QtGui.QIcon(img))
                 self.buttons[i, j].setIconSize(self.buttons[i, j].size())
-        self.secValue = 20
+        self.secValue = 90
         self.timerSec.start(1000)
 
     def destroySame(self):
         countSameLeft = {}
         countSameUp = {}
+        self.plus_step = True
         for i in range(1,self.N):
             for j in range(1,self.N):
                 if (i,j) in self.buttons:
@@ -153,28 +160,36 @@ class MyForm(QtWidgets.QWidget):
                         if (i-1,j) in self.buttons:
                             if (self.buttons[i,j].images == self.buttons[i-1,j].images):
                                 countSameUp[i,j] = countSameUp[i-1,j] + 1
+                                self.step_count()
                     if j>1:
                         if (i, j - 1) in self.buttons:
                             if (self.buttons[i,j].images == self.buttons[i,j-1].images):
                                 countSameLeft[i,j] = countSameLeft[i,j-1] + 1
+                                self.step_count()
+
+
                     if countSameLeft[i,j]==3 or countSameUp[i,j]==3:
                         self.removeSameButtons(i,j)
                         self.downAll()
                         self.fillEmpty()
                         self.destroySame()
-                       # return
+
+
+
+
+                    # return
 
     def removeSameButtons(self,x,y):
+
         dx = [1,0,-1,0]
         dy = [0,1,0,-1]
         img = self.buttons[x,y].images
         self.__ui.gridLayout.removeWidget(self.buttons[x, y])
         del self.buttons[x, y]
-        # Счет очков ()()()()()()()()()()()
-        #
-        #
-        #
-        #
+        self.deleted += 1
+        self.__ui.lineEdit_2.setText(str(self.deleted))
+
+
         for k in range(0,4):
             new_x = x + dx[k]
             new_y = y + dy[k]
@@ -182,6 +197,12 @@ class MyForm(QtWidgets.QWidget):
                 if img == self.buttons[new_x,new_y].images:
                     self.removeSameButtons(new_x,new_y)
 
+    def step_count(self):
+        # Счет очков
+        if self.plus_step == True:
+            self.plus_step = False
+            self.step += 1
+            self.__ui.lineEdit_3.setText(str(self.step))
 
     def downAll(self):
         for k in range(0,self.N*2):
