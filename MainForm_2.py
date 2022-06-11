@@ -13,7 +13,6 @@ class MyForm(QtWidgets.QWidget):
     def __init__(self, menuForm):
         super().__init__()
         self.plus_step = False
-        self.step = 0
         self.deleted = 0
         self.__ui = Ui_mainForm()
         self.__ui.setupUi(self)
@@ -94,15 +93,11 @@ class MyForm(QtWidgets.QWidget):
                         b2.setIcon(QtGui.QIcon(b2.images))
                         self.clearAllChecked()
                         self.destroySame()
-                        # self.moveCount -= 1
-                        #
-                        #
-                        # сделать сообщение об окончании ходов!
+                        self.plus_step=True
+                        self.step_count()
                         return
-
-        else:
-            self.checkedCount -= 1
-
+                    else:
+                        self.checkedCount -= 1
 
     def clearAllChecked(self):
         self.checkedButtons.clear()
@@ -142,8 +137,9 @@ class MyForm(QtWidgets.QWidget):
                 self.buttons[i, j].setChecked(False)
                 self.buttons[i, j].setIcon(QtGui.QIcon(img))
                 self.buttons[i, j].setIconSize(self.buttons[i, j].size())
-        self.secValue = 90
+        self.secValue = 110
         self.timerSec.start(1000)
+        self.step = 30
 
     def destroySame(self):
         countSameLeft = {}
@@ -160,13 +156,10 @@ class MyForm(QtWidgets.QWidget):
                         if (i-1,j) in self.buttons:
                             if (self.buttons[i,j].images == self.buttons[i-1,j].images):
                                 countSameUp[i,j] = countSameUp[i-1,j] + 1
-                                self.step_count()
                     if j>1:
                         if (i, j - 1) in self.buttons:
                             if (self.buttons[i,j].images == self.buttons[i,j-1].images):
                                 countSameLeft[i,j] = countSameLeft[i,j-1] + 1
-                                self.step_count()
-
 
                     if countSameLeft[i,j]==3 or countSameUp[i,j]==3:
                         self.removeSameButtons(i,j)
@@ -174,10 +167,6 @@ class MyForm(QtWidgets.QWidget):
                         self.fillEmpty()
                         self.destroySame()
 
-
-
-
-                    # return
 
     def removeSameButtons(self,x,y):
 
@@ -197,12 +186,26 @@ class MyForm(QtWidgets.QWidget):
                 if img == self.buttons[new_x,new_y].images:
                     self.removeSameButtons(new_x,new_y)
 
+    # Счет очков
     def step_count(self):
-        # Счет очков
         if self.plus_step == True:
             self.plus_step = False
-            self.step += 1
+            self.step -= 1
             self.__ui.lineEdit_3.setText(str(self.step))
+        if self.step == 0:
+            msgBox = QtWidgets.QMessageBox()
+            msgBox.setIcon(QtWidgets.QMessageBox.Information)
+            msgBox.setText("Ходы закончились. Попробовать снова?")
+            msgBox.setWindowTitle("Ходы закончились")
+            msgBox.setStandardButtons(QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No)
+            # msgBox.buttonClicked.connect(self.msgButtonClick)
+
+            returnStep = msgBox.exec()
+            if returnStep == QtWidgets.QMessageBox.Yes:
+                self.reset()
+            else:
+                self.__menuForm.setVisible(True)
+                self.close()
 
     def downAll(self):
         for k in range(0,self.N*2):

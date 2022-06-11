@@ -61,6 +61,7 @@ class Ui_mainForm(object):
         font = QtGui.QFont()
         font.setPointSize(14)
         self.lineEdit_3.setFont(font)
+        self.lineEdit_3.setReadOnly(True)
         self.lineEdit_3.setObjectName("lineEdit_3")
         self.verticalLayout_4.addWidget(self.lineEdit_3)
         spacerItem = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
